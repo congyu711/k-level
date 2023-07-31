@@ -39,9 +39,10 @@ namespace klevel
       lower._insert(idxs[i]);
     // std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
     // std::cout << "init time = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "[µs]" << std::endl;
-    auto pushback = [&]() -> void
-    {if(res.empty()||res.back().second!=upper.top) res.push_back(make_pair(upper.t,upper.top)); };
-    pushback();
+    auto pushback = [&](auto &res) -> void
+    {   if(res.empty()||res.end()[-1].second!=upper.top) 
+        res.push_back(make_pair(upper.t,upper.top)); };
+    pushback(res);
     while (1)
     {
       double t0 = getx((*lines)[upper.top], (*lines)[lower.top]);
@@ -66,30 +67,32 @@ namespace klevel
         lower._delete(lowermax);
         while (lower.nextT < t0)
           lower._advance();
-        pushback();
+        pushback(res);
         if (min(upper.nextT, lower.nextT) == RANGE_MAX)
           break;
         while (upper.top == lowermax && lower.top == uppermin)
         {
+          if (min(upper.nextT, lower.nextT) == RANGE_MAX)
+          {
+            t += 1e-10;
+            break;
+          }
           if (upper.nextT < lower.nextT)
             upper._advance();
           else
             lower._advance();
-          if (min(upper.nextT, lower.nextT) == RANGE_MAX)
-            return res;
         }
         if (upper.top != lowermax)
-          pushback();
+          pushback(res);
       }
       else if (t == upper.nextT)
       {
         upper._advance();
-        pushback();
+        pushback(res);
       }
       else
         lower._advance();
     }
     return res;
   }
-
 }
