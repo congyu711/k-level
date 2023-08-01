@@ -24,6 +24,10 @@ namespace kpq
     {
       return x * a - b;
     }
+    bool operator==(const line &y) const
+    {
+        return a==y.a&&b==y.b;
+    }
   };
   inline double getx(const line &_l1, const line &_l2)
   {
