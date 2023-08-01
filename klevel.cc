@@ -68,20 +68,21 @@ namespace klevel
         while (lower.nextT < t0)
           lower._advance();
         pushback(res);
+        t+=1e-10;
         if (min(upper.nextT, lower.nextT) == RANGE_MAX)
           break;
-        while (upper.top == lowermax && lower.top == uppermin)
-        {
-          if (min(upper.nextT, lower.nextT) == RANGE_MAX)
-          {
-            t += 1e-10;
-            break;
-          }
-          if (upper.nextT < lower.nextT)
-            upper._advance();
-          else
-            lower._advance();
-        }
+        // while (upper.top == lowermax && lower.top == uppermin)
+        // {
+        //   if (min(upper.nextT, lower.nextT) == RANGE_MAX)
+        //   {
+        //     t += 1e-10;
+        //     break;
+        //   }
+        //   if (upper.nextT < lower.nextT)
+        //     upper._advance();
+        //   else
+        //     lower._advance();
+        // }
         if (upper.top != lowermax)
           pushback(res);
       }
@@ -149,20 +150,21 @@ namespace klevel
         while (lower.nextT < t0)
           lower._advance();
         pushback(res);
+        t+=1e-10;
         if (min(upper.nextT, lower.nextT) == RANGE_MAX)
           break;
-        while (upper.top == lowermax && lower.top == uppermin)
-        {
-          if (min(upper.nextT, lower.nextT) == RANGE_MAX)
-          {
-            t += 1e-10;
-            break;
-          }
-          if (upper.nextT < lower.nextT)
-            upper._advance();
-          else
-            lower._advance();
-        }
+        // while (upper.top == lowermax && lower.top == uppermin)
+        // {
+        //   if (min(upper.nextT, lower.nextT) == RANGE_MAX)
+        //   {
+        //     t += 1e-10;
+        //     break;
+        //   }
+        //   if (upper.nextT < lower.nextT)
+        //     upper._advance();
+        //   else
+        //     lower._advance();
+        // }
         if (upper.top != lowermax)
           pushback(res);
       }
