@@ -1,7 +1,8 @@
 // kinetic priority queue
 //
 // Yu Cong 2023-7-30
-// This is an C++ implementation of the kinetic heap data structure described in Timothy M. Chan's paper 'Remarks on k-Level Algorithms in the Plane'
+// This is a C++ implementation of the kinetic heap data structure described
+// in Timothy M. Chan's paper 'Remarks on k-Level Algorithms in the Plane'
 // https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.44.9042&rep=rep1&type=pdf
 // section 2.2
 
@@ -136,7 +137,8 @@ namespace kpq
       _maintain();
   }
 
-  template <class type, class cmp, class binomialHeap = boost::heap::binomial_heap<pair<type, int>, boost::heap::compare<std::greater<pair<type, int>>>>>
+  template <class type, class cmp, class binomialHeap = 
+  boost::heap::binomial_heap<pair<type, int>, boost::heap::compare<std::greater<pair<type, int>>>>>
   class kineticPriorityQueue : public trivialKPQ<type, cmp>
   {
   public:
@@ -180,7 +182,6 @@ namespace kpq
   {
     this->top = Q.top;
     type nxt = pq.top().first;
-    // if(min(Q.nextT,nxt)==this->nextT)   this->nextT=RANGE_MAX,this->nextTop=-1;
     this->nextT = min(Q.nextT, nxt);
   }
   template <class type, class cmp, class binomialHeap>
