@@ -1,0 +1,8 @@
+# nodot
+*
+!/**/
+!*.*
+.vscode/
+*.out
+*.in
+!makefile
