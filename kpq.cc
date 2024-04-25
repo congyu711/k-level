@@ -34,7 +34,7 @@ namespace kpq
   template<typename T>
   inline double getx(const T &_l1, const T &_l2)
   {
-    if (fabs(_l1.a - _l2.a) < 1e-8)
+    if (fabs(_l1.a - _l2.a) < 1e-10)
       return RANGE_MAX;
     return (double)(_l1.b - _l2.b) / (_l1.a - _l2.a);
   }
@@ -98,9 +98,9 @@ namespace kpq
   template <class type, class cmp>
   bool trivialKPQ<type, cmp>::compare(const int a, const int b)
   {
-    if ((*lines)[a].gety(t + 1e-8) == (*lines)[b].gety(t + 1e-8))
+    if ((*lines)[a].gety(t + 1e-10) == (*lines)[b].gety(t + 1e-10))
       return cmp()((*lines)[a].a, (*lines)[b].a);
-    return cmp()((*lines)[a].gety(t + 1e-8), (*lines)[b].gety(t + 1e-8));
+    return cmp()((*lines)[a].gety(t + 1e-10), (*lines)[b].gety(t + 1e-10));
   }
   template <class type, class cmp>
   void trivialKPQ<type, cmp>::_insert(int l)
@@ -131,7 +131,7 @@ namespace kpq
       top = *S.begin();
       for (auto e : S)
       {
-        if (cmp()((*lines)[e].gety(t + 1e-8), (*lines)[top].gety(t + 1e-8)))
+        if (cmp()((*lines)[e].gety(t + 1e-10), (*lines)[top].gety(t + 1e-10)))
           top = e;
       }
     }
