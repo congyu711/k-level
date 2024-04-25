@@ -13,15 +13,16 @@
 namespace kpq
 {
   using namespace std;
-
-  typedef pair<double, double> point;
+  template<typename T>
+  using point= pair<T, T>;
+  template<typename T>
   class line
   {
     // y=ax-b
   public:
-    double a, b;
-    line(double _a, double _b) : a(_a), b(_b) {}
-    double gety(double x)
+    T a, b;
+    line(T _a, T _b) : a(_a), b(_b) {}
+    T gety(T x)
     {
       return x * a - b;
     }
@@ -30,9 +31,10 @@ namespace kpq
         return a==y.a&&b==y.b;
     }
   };
-  inline double getx(const line &_l1, const line &_l2)
+  template<typename T>
+  inline double getx(const T &_l1, const T &_l2)
   {
-    if (fabs(_l1.a - _l2.a) < 1e-5)
+    if (fabs(_l1.a - _l2.a) < 1e-8)
       return RANGE_MAX;
     return (double)(_l1.b - _l2.b) / (_l1.a - _l2.a);
   }
@@ -40,14 +42,14 @@ namespace kpq
   /////////////////////////////////////////////////
   // You will need a vector to store all lines. 
   // All functions of KPQ operates on indices of that vector.
-  // e.g. `vector<line> lines;`
+  // e.g. `vector<line<T>> lines;`
   /////////////////////////////////////////////////
 
   template <class type, class cmp>
   class trivialKPQ
   {
   public:
-    vector<line> *lines;
+    vector<line<type>> *lines;
     bool fin;             // finish--KPQ.advance() label
     unordered_set<int> S; // store indices of lines
     type t, nextT;
@@ -61,7 +63,7 @@ namespace kpq
     virtual void _maintain();
     bool compare(const int, const int);
     trivialKPQ(type _t) : t(_t), nextT(-1 * _t), top(-1), nextTop(-1), fin(false) {}
-    trivialKPQ(vector<line> *p) : trivialKPQ(-RANGE_MAX) { lines = p; }
+    trivialKPQ(vector<line<type>> *p) : trivialKPQ(-RANGE_MAX) { lines = p; }
     trivialKPQ() : trivialKPQ(-RANGE_MAX) { lines = nullptr; }
   };
   template <class type, class cmp>
@@ -152,7 +154,7 @@ namespace kpq
     void _advance();
     void _insert(int);
     void _delete(int);
-    kineticPriorityQueue(int sz, vector<line> *p)
+    kineticPriorityQueue(int sz, vector<line<type>> *p)
     {
       this->lines = p;
       r = ceil(log((double)sz));

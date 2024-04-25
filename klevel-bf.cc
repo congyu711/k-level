@@ -2,7 +2,6 @@
 
 #include <bits/stdc++.h>
 using namespace std;
-const int k = 20;
 const double eps = 1e-6;
 typedef pair<double, double> point;
 class line
@@ -29,17 +28,16 @@ inline double getx(const line &_l1, const line &_l2)
 vector<line> lines;
 int main()
 {
-
+    ifstream fin("data.in");
     ofstream fout("!klevelbf.out");
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    int n;
-    cin >> n;
+    fin.ignore(numeric_limits<streamsize>::max(), '\n');
+    int n,k;
+    fin >> n >>k;
     vector<int> res;
-    // int k=n*0.2;
     double a, b;
     for (int i = 0; i < n; i++)
     {
-        cin >> a >> b;
+        fin >> a >> b;
         lines.push_back(line(a, b));
     }
     double t = -1e10;

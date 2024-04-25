@@ -16,12 +16,13 @@ namespace klevel
   /// @param k k for k-level
   /// @param lines ptr to the set of lines
   /// @return a vector of lines on klevel
-  vector<int> klevel(int k, vector<line> *lines)
+  template<typename T>
+  vector<int> klevel(int k, vector<line<T>> *lines)
   {
     vector<int> res;
-    kineticPriorityQueue<double, less<double>> upper(k, lines);
-    kineticPriorityQueue<double, greater<double>> lower(lines->size() - k, lines);
-    double t = -RANGE_MAX;
+    kineticPriorityQueue<T, less<T>> upper(k, lines);
+    kineticPriorityQueue<T, greater<T>> lower(lines->size() - k, lines);
+    auto t = -RANGE_MAX;
     // find k-level for the initial t and init upper&lower
     // can be done in O(n)
     // TODO: O(n) initialization
@@ -41,7 +42,7 @@ namespace klevel
     pushback();
     while (1)
     {
-      double t0 = getx((*lines)[upper.top], (*lines)[lower.top]);
+      T t0 = getx((*lines)[upper.top], (*lines)[lower.top]);
       if (t0 < t)
         t0 = RANGE_MAX;
       t = min({upper.nextT, lower.nextT, t0});
