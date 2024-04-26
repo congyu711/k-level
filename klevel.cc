@@ -7,15 +7,16 @@
 // section 2.2
 
 #include "kpq.cc"
+#include <iostream>
 namespace klevel
 {
   using namespace std;
   using namespace kpq;
 
-  /// @brief this function computes (top) k-level of a set of lines
+  /// @brief this function computes the (top) k-level of a set of lines
   /// @param k k for k-level
   /// @param lines ptr to the set of lines
-  /// @return a vector of lines on klevel
+  /// @return a vector of lines on the k-level
   template<typename T>
   vector<int> klevel(int k, vector<line<T>> *lines)
   {
@@ -40,10 +41,11 @@ namespace klevel
         res.push_back(upper.top);
     };
     pushback();
+    pair<int,int> preswap{-1,-1};
     while (1)
     {
       T t0 = getx((*lines)[upper.top], (*lines)[lower.top]);
-      if (t0 < t)
+      if (t0 <= t || upper.top==preswap.second&&lower.top==preswap.first)
         t0 = RANGE_MAX;
       t = min({upper.nextT, lower.nextT, t0});
       if (t == RANGE_MAX)
@@ -51,31 +53,26 @@ namespace klevel
       if (t == t0)
       {
         int uppermin = upper.top, lowermax = lower.top;
-
-        upper._insert(lowermax);
-        while (upper.t < t0)
-          upper._advance();
+        preswap=make_pair(uppermin,lowermax);
+        upper._insert(lowermax);  upper._advance();
         upper._delete(uppermin);
-        while (upper.nextT < t0)
-          upper._advance();
-        lower._insert(uppermin);
-        while (lower.t < t0)
-          lower._advance();
+        lower._insert(uppermin);  lower._advance();
         lower._delete(lowermax);
-        while (lower.nextT < t0)
-          lower._advance();
+        if(res.empty()||res.end()[-1]!=upper.top) 
+          std::cout<<"intersection: "<<upper.t<<' '<<upper.top<<std::endl;
         pushback();
-        t+=1e-10;
-        if (min(upper.nextT, lower.nextT) == RANGE_MAX)
-          break;
       }
       else if (t == upper.nextT)
       {
         upper._advance();
+        if(res.empty()||res.end()[-1]!=upper.top) 
+          std::cout<<"upper: "<<upper.t<<' '<<upper.top<<std::endl;
         pushback();
       }
       else
         lower._advance();
+      if (min(upper.nextT, lower.nextT) == RANGE_MAX)
+        break;
     }
     return res;
   }

@@ -15,6 +15,6 @@ int main(int argc, char **argv)
     fout<<n<<' '<<k<<'\n';
     for(int i=0;i<n;i++)
     {
-        fout<<gen()%20000000<<' '<<gen()%20000000<<'\n';
+        fout<<gen()%20000000<<' '<<gen()%200000<<'\n';
     }
 }

@@ -2,7 +2,6 @@
 
 #include <bits/stdc++.h>
 using namespace std;
-const double eps = 1e-6;
 typedef pair<double, double> point;
 class line
 {
@@ -45,7 +44,7 @@ int main()
     for (int i = 0; i < n; i++)
         idxs[i] = i;
     sort(idxs.begin(), idxs.end(), [&](int a, int b)
-         { return lines[a].gety(t + eps) > lines[b].gety(t + eps); });
+         { return lines[a].gety(t) > lines[b].gety(t); });
     fout << idxs[k - 1] << endl;
     int top = idxs[k - 1];
     while (1)
@@ -63,7 +62,7 @@ int main()
                 tt = x;
             }
         }
-        if (nxt == -1)
+        if (nxt == -1 || tt >= 1e10)
             break;
         fout << nxt << '\n';
         top = nxt;

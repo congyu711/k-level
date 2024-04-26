@@ -32,11 +32,11 @@ namespace kpq
     }
   };
   template<typename T>
-  inline double getx(const T &_l1, const T &_l2)
+  inline T getx(const line<T> &_l1, const line<T> &_l2)
   {
-    if (fabs(_l1.a - _l2.a) < 1e-10)
+    if (_l1.a == _l2.a)
       return RANGE_MAX;
-    return (double)(_l1.b - _l2.b) / (_l1.a - _l2.a);
+    return (_l1.b - _l2.b) / (_l1.a - _l2.a);
   }
 
   /////////////////////////////////////////////////
@@ -50,7 +50,6 @@ namespace kpq
   {
   public:
     vector<line<type>> *lines;
-    bool fin;             // finish--KPQ.advance() label
     unordered_set<int> S; // store indices of lines
     type t, nextT;
     int top, nextTop;
@@ -62,7 +61,7 @@ namespace kpq
     // maintain nextTop and nextT
     virtual void _maintain();
     bool compare(const int, const int);
-    trivialKPQ(type _t) : t(_t), nextT(-1 * _t), top(-1), nextTop(-1), fin(false) {}
+    trivialKPQ(type _t) : t(_t), nextT(-1 * _t), top(-1), nextTop(-1) {}
     trivialKPQ(vector<line<type>> *p) : trivialKPQ(-RANGE_MAX) { lines = p; }
     trivialKPQ() : trivialKPQ(-RANGE_MAX) { lines = nullptr; }
   };
@@ -89,8 +88,11 @@ namespace kpq
   template <class type, class cmp>
   void trivialKPQ<type, cmp>::_advance()
   {
-    t = nextT;
-    top = nextTop;
+    if(nextT>t)
+    {
+      t = nextT;
+      top = nextTop;
+    }
     // find nextT and nextTop
     // O(S.size)
     _maintain();
@@ -98,9 +100,9 @@ namespace kpq
   template <class type, class cmp>
   bool trivialKPQ<type, cmp>::compare(const int a, const int b)
   {
-    if ((*lines)[a].gety(t + 1e-10) == (*lines)[b].gety(t + 1e-10))
+    if ((*lines)[a].gety(t) == (*lines)[b].gety(t))
       return cmp()((*lines)[a].a, (*lines)[b].a);
-    return cmp()((*lines)[a].gety(t + 1e-10), (*lines)[b].gety(t + 1e-10));
+    return cmp()((*lines)[a].gety(t), (*lines)[b].gety(t));
   }
   template <class type, class cmp>
   void trivialKPQ<type, cmp>::_insert(int l)
@@ -131,7 +133,7 @@ namespace kpq
       top = *S.begin();
       for (auto e : S)
       {
-        if (cmp()((*lines)[e].gety(t + 1e-10), (*lines)[top].gety(t + 1e-10)))
+        if (compare(e,top))
           top = e;
       }
     }
@@ -183,15 +185,13 @@ namespace kpq
   void kineticPriorityQueue<type, cmp, binomialHeap>::_maintain()
   {
     this->top = Q.top;
-    type nxt = pq.top().first;
-    this->nextT = min(Q.nextT, nxt);
+    this->nextT = min(Q.nextT, pq.top().first);
   }
   template <class type, class cmp, class binomialHeap>
   void kineticPriorityQueue<type, cmp, binomialHeap>::_advance()
   {
     this->t = this->nextT;
-    type nxt = pq.top().first;
-    int p = pq.top().second;
+    auto [nxt,p]=pq.top();
     if (this->t == subKPQs[p]->nextT)
     {
       auto pmin = subKPQs[p]->top;
@@ -200,12 +200,8 @@ namespace kpq
       auto nextpmin = subKPQs[p]->top;
       if (pmin != nextpmin)
       {
-        // Q.t=this->t;
-        // Q._maintain();
         Q._delete(pmin);
         Q._insert(nextpmin);
-        while (Q.nextT < this->t)
-          Q._advance();
       }
     }
     else if (this->t == Q.nextT)
@@ -228,10 +224,23 @@ namespace kpq
       }
     }
     mp.insert(make_pair(l, p));
-    if (subKPQs[p]->S.size())
-      Q._delete(subKPQs[p]->top);
+    Q._delete(subKPQs[p]->top);
     subKPQs[p]->_insert(l);
     pq.update(pq_handlers[p], make_pair(subKPQs[p]->nextT, p));
+    // this-> t shouldn't decrease... ?
+    while(pq.top().first<this->t)
+    {
+      auto [nxt,pp]=pq.top();
+      auto pmin = subKPQs[pp]->top;
+      subKPQs[pp]->_advance();
+      pq.update(pq_handlers[pp], make_pair(subKPQs[pp]->nextT, pp));
+      auto nextpmin = subKPQs[pp]->top;
+      if (pmin != nextpmin)
+      {
+        Q._delete(pmin);
+        Q._insert(nextpmin);
+      }
+    }
     Q._insert(subKPQs[p]->top);
     _maintain();
   }
