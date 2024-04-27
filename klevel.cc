@@ -18,9 +18,9 @@ namespace klevel
   /// @param lines ptr to the set of lines
   /// @return a vector of lines on the k-level
   template<typename T>
-  vector<int> klevel(int k, vector<line<T>> *lines)
+  vector<pair<int,T>> klevel(int k, vector<line<T>> *lines)
   {
-    vector<int> res;
+    vector<pair<int,T>> res;
     kineticPriorityQueue<T, less<T>> upper(k, lines);
     kineticPriorityQueue<T, greater<T>> lower(lines->size() - k, lines);
     auto t = -RANGE_MAX;
@@ -37,8 +37,8 @@ namespace klevel
     for (int i = k; i < idxs.size(); i++)
       lower._insert(idxs[i]);
     auto pushback = [&]() -> void
-    {   if(res.empty()||res.end()[-1]!=upper.top) 
-        res.push_back(upper.top);
+    {   if(res.empty()||res.end()[-1].first!=upper.top) 
+        res.push_back({upper.top,upper.t});
     };
     pushback();
     pair<int,int> preswap{-1,-1};
@@ -54,19 +54,21 @@ namespace klevel
       {
         int uppermin = upper.top, lowermax = lower.top;
         preswap=make_pair(uppermin,lowermax);
-        upper._insert(lowermax);  upper._advance();
+        upper._insert(lowermax);  
+        while(upper.t<t)  upper._advance();
         upper._delete(uppermin);
-        lower._insert(uppermin);  lower._advance();
+        lower._insert(uppermin);
+        while(lower.t<t)  lower._advance();
         lower._delete(lowermax);
-        if(res.empty()||res.end()[-1]!=upper.top) 
-          std::cout<<"intersection: "<<upper.t<<' '<<upper.top<<std::endl;
+        if(res.empty()||res.end()[-1].first!=upper.top) 
+          std::cout<<"i: "<<upper.t<<' '<<upper.top<<std::endl;
         pushback();
       }
       else if (t == upper.nextT)
       {
         upper._advance();
-        if(res.empty()||res.end()[-1]!=upper.top) 
-          std::cout<<"upper: "<<upper.t<<' '<<upper.top<<std::endl;
+        if(res.empty()||res.end()[-1].first!=upper.top) 
+          std::cout<<"u: "<<upper.t<<' '<<upper.top<<std::endl;
         pushback();
       }
       else

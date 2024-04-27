@@ -22,6 +22,6 @@ int main()
     auto res = klevel::klevel(k,&lines);
     for(auto e:res)
     {
-        fout<<e<<'\n';
+        fout<<e.first<<' '<<e.second<<'\n';
     }
 }

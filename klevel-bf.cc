@@ -45,7 +45,7 @@ int main()
         idxs[i] = i;
     sort(idxs.begin(), idxs.end(), [&](int a, int b)
          { return lines[a].gety(t) > lines[b].gety(t); });
-    fout << idxs[k - 1] << endl;
+    fout << idxs[k - 1]<<' '<< -RANGE_MAX << endl;
     int top = idxs[k - 1];
     while (1)
     {
@@ -64,7 +64,7 @@ int main()
         }
         if (nxt == -1 || tt >= 1e10)
             break;
-        fout << nxt << '\n';
+        fout<< nxt << ' ' << tt << '\n';
         top = nxt;
         t = tt;
     }

@@ -60,7 +60,7 @@ namespace kpq
     virtual void _delete(int);
     // maintain nextTop and nextT
     virtual void _maintain();
-    bool compare(const int, const int);
+    bool compare(const int&, const int&);
     trivialKPQ(type _t) : t(_t), nextT(-1 * _t), top(-1), nextTop(-1) {}
     trivialKPQ(vector<line<type>> *p) : trivialKPQ(-RANGE_MAX) { lines = p; }
     trivialKPQ() : trivialKPQ(-RANGE_MAX) { lines = nullptr; }
@@ -98,7 +98,7 @@ namespace kpq
     _maintain();
   }
   template <class type, class cmp>
-  bool trivialKPQ<type, cmp>::compare(const int a, const int b)
+  bool trivialKPQ<type, cmp>::compare(const int& a, const int& b)
   {
     if ((*lines)[a].gety(t) == (*lines)[b].gety(t))
       return cmp()((*lines)[a].a, (*lines)[b].a);
@@ -198,6 +198,7 @@ namespace kpq
       subKPQs[p]->_advance();
       pq.update(pq_handlers[p], make_pair(subKPQs[p]->nextT, p));
       auto nextpmin = subKPQs[p]->top;
+      Q.t=max(Q.t, this->t);  // this is safe since in this case Q.nextT>pq.top().first==this->t.
       if (pmin != nextpmin)
       {
         Q._delete(pmin);
@@ -224,11 +225,13 @@ namespace kpq
       }
     }
     mp.insert(make_pair(l, p));
+    Q.t=max(Q.t, this->t);
     Q._delete(subKPQs[p]->top);
     subKPQs[p]->_insert(l);
     pq.update(pq_handlers[p], make_pair(subKPQs[p]->nextT, p));
-    // this-> t shouldn't decrease... ?
-    while(pq.top().first<this->t)
+    Q._insert(subKPQs[p]->top);
+    // makesure min{Q.nextT, pq.top().first}>this.t
+    while(pq.top().first < this->t)
     {
       auto [nxt,pp]=pq.top();
       auto pmin = subKPQs[pp]->top;
@@ -241,7 +244,7 @@ namespace kpq
         Q._insert(nextpmin);
       }
     }
-    Q._insert(subKPQs[p]->top);
+    while(Q.nextT<this->t)  Q._advance();
     _maintain();
   }
   template <class type, class cmp, class binomialHeap>
@@ -249,11 +252,26 @@ namespace kpq
   {
     this->S.erase(l);
     auto P = subKPQs[mp[l]];
+    // Q.resetT(this->t);
     Q._delete(P->top);
     P->_delete(l);
     pq.update(pq_handlers[mp[l]], make_pair(P->nextT, mp[l]));
     mp.erase(l);
     Q._insert(P->top);
+    while(pq.top().first < this->t)
+    {
+      auto [nxt,pp]=pq.top();
+      auto pmin = subKPQs[pp]->top;
+      subKPQs[pp]->_advance();
+      pq.update(pq_handlers[pp], make_pair(subKPQs[pp]->nextT, pp));
+      auto nextpmin = subKPQs[pp]->top;
+      if (pmin != nextpmin)
+      {
+        Q._delete(pmin);
+        Q._insert(nextpmin);
+      }
+    }
+    while(Q.nextT<this->t)  Q._advance();
     _maintain();
   }
 }
