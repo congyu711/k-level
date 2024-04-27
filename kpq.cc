@@ -100,7 +100,7 @@ namespace kpq
   template <class type, class cmp>
   bool trivialKPQ<type, cmp>::compare(const int& a, const int& b)
   {
-    if ((*lines)[a].gety(t) == (*lines)[b].gety(t))
+    if (fabs((*lines)[a].gety(t) - (*lines)[b].gety(t))<1e-10)
       return cmp()((*lines)[a].a, (*lines)[b].a);
     return cmp()((*lines)[a].gety(t), (*lines)[b].gety(t));
   }
@@ -252,7 +252,7 @@ namespace kpq
   {
     this->S.erase(l);
     auto P = subKPQs[mp[l]];
-    // Q.resetT(this->t);
+    Q.t=max(Q.t, this->t);
     Q._delete(P->top);
     P->_delete(l);
     pq.update(pq_handlers[mp[l]], make_pair(P->nextT, mp[l]));
