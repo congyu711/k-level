@@ -34,7 +34,7 @@ namespace kpq
   template<typename T>
   inline T getx(const line<T> &_l1, const line<T> &_l2)
   {
-    if (_l1.a == _l2.a)
+    if (fabs(_l1.a - _l2.a)<1e-10)
       return RANGE_MAX;
     return (_l1.b - _l2.b) / (_l1.a - _l2.a);
   }
@@ -100,7 +100,7 @@ namespace kpq
   template <class type, class cmp>
   bool trivialKPQ<type, cmp>::compare(const int& a, const int& b)
   {
-    if (fabs((*lines)[a].gety(t) - (*lines)[b].gety(t))<1e-10)
+    if (fabs((*lines)[a].gety(t) - (*lines)[b].gety(t))<1e-8)
       return cmp()((*lines)[a].a, (*lines)[b].a);
     return cmp()((*lines)[a].gety(t), (*lines)[b].gety(t));
   }

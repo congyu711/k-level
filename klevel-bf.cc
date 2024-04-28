@@ -64,6 +64,7 @@ int main()
         }
         if (nxt == -1 || tt >= 1e10)
             break;
+        if(tt==0)   tt=0.0;
         fout<< nxt << ' ' << tt << '\n';
         top = nxt;
         t = tt;

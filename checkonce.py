@@ -2,7 +2,7 @@ import subprocess
 import filecmp
 
 subprocess.Popen("timeout 100 ./klevel-main",shell=True).wait()
-# subprocess.Popen("./klevel-bf",shell=True).wait()
+subprocess.Popen("./klevel-bf",shell=True).wait()
 try:
     status = filecmp.cmp("!klevelmain.out", "!klevelbf.out")
     if status:
