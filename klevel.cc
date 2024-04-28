@@ -7,7 +7,6 @@
 // section 2.2
 
 #include "kpq.cc"
-#include <iostream>
 namespace klevel
 {
   using namespace std;
@@ -60,21 +59,15 @@ namespace klevel
         lower._insert(uppermin);
         while(lower.t<t)  lower._advance();
         lower._delete(lowermax);
-        // if(res.empty()||res.end()[-1].first!=upper.top) 
-        //   std::cout<<"i: "<<upper.t<<' '<<upper.top<<std::endl;
         pushback();
       }
       else if (t == upper.nextT)
       {
         upper._advance();
-        // if(res.empty()||res.end()[-1].first!=upper.top) 
-        //   std::cout<<"u: "<<upper.t<<' '<<upper.top<<std::endl;
         pushback();
       }
       else
         lower._advance();
-      // if (min(upper.nextT, lower.nextT) == RANGE_MAX)
-      //   break;
     }
     return res;
   }
