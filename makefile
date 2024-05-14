@@ -1,5 +1,12 @@
-FLAGS= -std=c++20 -O3
-CXX=g++-13
+FLAGS := -std=c++20 -O3
+OS := $(shell uname -s)
+ifeq ($(OS),Darwin)
+	BOOSTINC := -I/opt/homebrew/include
+	CXX := g++-14
+else
+	# BOOSTINC := -I/usr/include
+	CXX := g++
+endif
 MAKEFLAGS += --always-make
 .PHONY: all
 
@@ -13,4 +20,4 @@ klevel-bf: klevel-bf.cc
 
 # need libboost
 klevel-main: klevel-main.cc
-	$(CXX) $^ -o $@ $(FLAGS) -I/opt/homebrew/Cellar/boost/1.84.0_1/include
+	$(CXX) $^ -o $@ $(FLAGS) $(BOOSTINC)
